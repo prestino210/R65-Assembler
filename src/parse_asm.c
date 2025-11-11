@@ -6,7 +6,7 @@ uint8_t* parse_r65asm(char* contents) {
 
     return r65_bytes;
 }
-uint8_t get_opcode(char* statement) {
+uint8_t get_opcode(Statement statement) {
     uint8_t opcode = 0x0;
 
 

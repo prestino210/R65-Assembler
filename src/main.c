@@ -10,7 +10,6 @@ int main(int argc, char** argv) {
     if(argc > 1) {
         char* contents = get_contents(argv[1]);
         if(contents == NULL) {
-            printf("Could not verify R65 assembly.\n");
             return EXIT_FAILURE;
         }
         uint8_t* rom_bytes = parse_r65asm(contents);
