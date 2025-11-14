@@ -1,4 +1,4 @@
-__R65A__
+__6502__
 .org $0600
 ; 6502 test program - 100 lines
 Start:  LDX #$00

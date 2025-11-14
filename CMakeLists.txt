@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(R65Assembler C)
+project(6502Assembler C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)

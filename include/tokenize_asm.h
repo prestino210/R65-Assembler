@@ -17,12 +17,7 @@ typedef struct {
     char* value;
 } Token;
 
-typedef struct {
-    int tokensc;
-    Token* tokens;
-} Statement;
-
-Statement* tokenize(char* contents);
+Token* tokenize(char* contents);
 
 
 #endif

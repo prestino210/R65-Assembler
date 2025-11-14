@@ -1,4 +1,4 @@
-#include "write_r65.h"
+#include "write_program.h"
 #include <stdio.h>
 
 const int WRITE_SUCCESS = 0;

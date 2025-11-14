@@ -2,65 +2,74 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <stdbool.h>
+#define SIGNATURE_6502 "__6502__"
 
-char* get_contents(char* r65asm_path) {
+bool check_sig(char* str_buf) {
+    return strcmp(str_buf, SIGNATURE_6502) == 0;
+}
+
+char* get_contents(char* asm6502_path) {
     
-    char* string_buf = NULL;
+    char* contents_buf = NULL;
+    size_t buf_size = 0;
     int buf_chars = 0;
 
-    FILE* file = fopen(r65asm_path, "r");
+    FILE* file = fopen(asm6502_path, "r");
     if(file == NULL) {
         printf("Could not open target file.\n");
-        return NULL;
+        goto _return;
     }
     
-    char* _line_buf = NULL;
     char* line_buf = NULL;
     size_t line_buf_size = 0;
     ssize_t line_chars = 0;
-    int line_count = 0;
+    int lines = -1;
     
-    while ((line_chars = getline(&_line_buf, &line_buf_size, file)) != -1) {
-        if(_line_buf[line_chars - 1] == '\n') line_chars--;
-        line_chars++;
-        line_buf = malloc(line_chars * sizeof(char));
-        for(int i = 0; i < line_chars - 1; i++) {
-            line_buf[i] = _line_buf[i];
+    while ((line_chars = getline(&line_buf, &line_buf_size, file)) != -1) {
+        lines++;
+        if(line_buf[line_chars - 1] == '\n') {
+            line_buf[line_chars - 1] = (lines > 0) ? ' ' : '\0';
+        } else {
+            if(lines == 0) goto check_sig;
+            line_chars++;
+            line_buf_size = line_chars * sizeof(char);
+            line_buf = realloc(line_buf, line_buf_size);
+            line_buf[line_chars - 1] = ' ';
         }
-        line_buf[line_chars - 1] = '\t';
-
-        if(line_count == 0) {
-            if(strcmp(line_buf, "__R65A__\t") != 0) {
-                printf("Missing __R65A__ header.\n");
-                return NULL;
-            }
+        check_sig:
+        if(lines == 0 && !check_sig(line_buf)) {
+            break;
         }
-        if(line_count != 0 && line_chars != 0) {
-            buf_chars += line_chars;
-            string_buf = realloc(string_buf, (buf_chars * sizeof(char)));
-            for(int i = 0; i < line_chars; i++) {
-                if(line_buf[i] != '\n') {
-                    string_buf[i + (buf_chars - line_chars)] = line_buf[i];
-                }
-            }
-            string_buf[buf_chars] = '\0';
+        buf_chars += line_chars;
+        buf_size = buf_chars * sizeof(char);
+        contents_buf = realloc(contents_buf, buf_size);
+        for(int i = 0; i < line_chars; i++) {
+            contents_buf[buf_chars - line_chars + i] = line_buf[i];
         }
-       
-        free(line_buf);
-        line_buf = NULL;
-        line_count++;
     }
 
-    if(line_count == 0) {
-        printf("Could not read file contents.\n");
-        return NULL;
-    } else if(line_count == 1) {
-        printf("There is nothing to assemble.\n");
-        return NULL;
+    switch(lines) {
+        case -1:
+            printf("No content in file.\n");
+            break;
+        case 0:
+            printf("Could not identify 6502 assembly.\n");
+            break;
+        case 1:
+            printf("No code to assemble.\n");
+            break;
+        default:
+            buf_chars++;
+            buf_size = buf_chars * sizeof(char);
+            contents_buf = realloc(contents_buf, buf_size);
+            contents_buf[buf_chars - 1] = '\0';
+            break;
     }
-
-    free(_line_buf);
+   
+    free(line_buf);
     fclose(file);
-
-    return string_buf;
+    _return:
+    return contents_buf;
 }
