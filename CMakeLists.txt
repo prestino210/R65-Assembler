@@ -13,9 +13,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/*.c")
 
-add_executable(R65A ${SOURCES})
+add_executable(6502Assembler ${SOURCES})
 
-target_compile_options(R65A PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(6502Assembler PRIVATE -Wall -Wextra -Wpedantic)
 
 add_custom_target(distclean
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_clean.cmake

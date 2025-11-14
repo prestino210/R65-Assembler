@@ -15,7 +15,7 @@ int labelsc = 0;
 uint16_t prgm_offset = 0x0600;
 
 uint8_t* parse_6502(Token* tokens) {
-    uint8_t prgm_bytes = NULL;
+    uint8_t* prgm_bytes = NULL;
 
 
     return prgm_bytes;

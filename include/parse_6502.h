@@ -3,6 +3,6 @@
 #include <stdint.h>
 #include "tokenize_asm.h"
 
-uint8_t* parse_6502(Statement* statements);
+uint8_t* parse_6502(Token* tokens);
 
 #endif
